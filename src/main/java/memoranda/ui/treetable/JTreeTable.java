@@ -17,9 +17,7 @@ package main.java.memoranda.ui.treetable;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
-
-import main.java.memoranda.Task;
-
+import main.java.memoranda.interfaces.ITask;
 import javax.swing.table.*;
 
 import java.awt.Color;
@@ -210,7 +208,7 @@ public class JTreeTable extends JTable {
 				setBackground(table.getSelectionBackground());
 			else
 				setBackground(table.getBackground());
-			if (value instanceof Task) {
+			if (value instanceof ITask) {
 				
 			}
 			visibleRow = row;

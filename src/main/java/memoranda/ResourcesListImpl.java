@@ -9,7 +9,8 @@
 package main.java.memoranda;
 
 import java.util.Vector;
-
+import main.java.memoranda.interfaces.IProject;
+import main.java.memoranda.interfaces.IResourcesList;
 import main.java.memoranda.util.Util;
 
 import java.io.File;
@@ -23,22 +24,22 @@ import nu.xom.Elements;
  *
  */
 /*$Id: ResourcesListImpl.java,v 1.5 2007/03/20 06:21:46 alexeya Exp $*/
-public class ResourcesListImpl implements ResourcesList {
+public class ResourcesListImpl implements IResourcesList {
     
-	private Project _project = null;
+	private IProject _project = null;
     private Document _doc = null;
     private Element _root = null;
 
     /**
      * Constructor for TaskListImpl.
      */
-    public ResourcesListImpl(Document doc, Project prj) {
+    public ResourcesListImpl(Document doc, IProject prj) {
         _doc = doc;
         _root = _doc.getRootElement();
         _project = prj;
     }
 
-    public ResourcesListImpl(Project prj) {
+    public ResourcesListImpl(IProject prj) {
             _root = new Element("resources-list");
             _doc = new Document(_root);
             _project = prj;
@@ -53,7 +54,7 @@ public class ResourcesListImpl implements ResourcesList {
     }
 
     /**
-     * @see main.java.memoranda.ResourcesList#getResource(java.lang.String)
+     * @see main.java.memoranda.interfaces.IResourcesList#getResource(java.lang.String)
      */
     public Resource getResource(String path) {
         Elements rs = _root.getChildElements("resource");
@@ -75,7 +76,7 @@ public class ResourcesListImpl implements ResourcesList {
     }*/
     
     /**
-     * @see main.java.memoranda.ResourcesList#addResource(java.lang.String, boolean)
+     * @see main.java.memoranda.interfaces.IResourcesList#addResource(java.lang.String, boolean)
      */
     public void addResource(String path, boolean isInternetShortcut, boolean isProjectFile) {
         Element el = new Element("resource");
@@ -93,30 +94,33 @@ public class ResourcesListImpl implements ResourcesList {
     }
 
     /**
-     * @see main.java.memoranda.ResourcesList#removeResource(java.lang.String)
+     * @see main.java.memoranda.interfaces.IResourcesList#removeResource(java.lang.String)
      */
+    
+    // Task 1 reducing complexity
     public void removeResource(String path) {
         Elements rs = _root.getChildElements("resource");
         for (int i = 0; i < rs.size(); i++)
-            if (rs.get(i).getAttribute("path").getValue().equals(path)) {
-            	if(getResource(path).isProjectFile()) {
+            if (rs.get(i).getAttribute("path").getValue().equals(path) && getResource(path).isProjectFile()) {
+            	//if(getResource(path).isProjectFile()) {
             		File f = new File(path);
             		System.out.println("[DEBUG] Removing file "+path);
                 	f.delete();
             	}
+            else {
             	_root.removeChild(rs.get(i));
             }
     }
         
 
     /**
-     * @see main.java.memoranda.ResourcesList#getAllResourcesCount()
+     * @see main.java.memoranda.interfaces.IResourcesList#getAllResourcesCount()
      */
     public int getAllResourcesCount() {
         return _root.getChildElements("resource").size();
     }
     /**
-     * @see main.java.memoranda.ResourcesList#getXMLContent()
+     * @see main.java.memoranda.interfaces.IResourcesList#getXMLContent()
      */
     public Document getXMLContent() {
         return _doc;
